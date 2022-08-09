@@ -26,16 +26,13 @@ export default function readDatabase(path) {
       }
       const students = parseCSV(db);
       const dept = {};
-      for (const field of students.map((student) => student.field)) {
-        if (Object.keys(dept).findIndex((f) => f === field) === -1) {
-          dept[field] = [];
+      students.forEach((student) => {
+        if (student.field in dept) {
+          dept[student.field].push(student.firstname);
+        } else {
+          dept[student.field] = [student.firstname];
         }
-      }
-      for (const field of Object.keys(dept)) {
-        const result = students.filter((student) => student.field === field)
-          .map((student) => student.firstname);
-        dept[field] = result;
-      }
+      });
       resolve(dept);
     });
   });
