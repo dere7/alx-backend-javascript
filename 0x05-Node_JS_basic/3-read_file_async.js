@@ -35,8 +35,7 @@ function countStudents(path) {
       for (const field of fields) {
         const result = students.filter((student) => student.field === field)
           .map((student) => student.firstname);
-        console.log(`Number of students in ${field}: ${result.length}. \
-    List: ${result.join(', ')}`);
+        console.log(`Number of students in ${field}: ${result.length}. List: ${result.join(', ')}`);
       }
       resolve();
     });
