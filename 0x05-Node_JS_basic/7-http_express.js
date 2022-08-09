@@ -1,5 +1,5 @@
 const express = require('express');
-const fs = require('fs/promises');
+const fs = require('fs');
 
 function parseCSV(data) {
   let rows = data.split('\n');
@@ -29,9 +29,12 @@ app.get('/', (req, res) => {
 
 app.get('/students', (req, res) => {
   res.setHeader('Content-Type', 'text/plain');
-  const response = ['This is the list of our students!'];
-  fs.readFile(process.argv[2], { encoding: 'utf8' }).then((data) => {
-    const students = parseCSV(data);
+  const response = ['This is the list of our students'];
+  fs.readFile(process.argv[2], { encoding: 'utf8' }, (err, db) => {
+    if (err) {
+      throw Error('Cannot load the database');
+    }
+    const students = parseCSV(db);
     response.push(`Number of students: ${students.length}`);
     const fields = [];
     for (const field of students.map((student) => student.field)) {
@@ -39,16 +42,12 @@ app.get('/students', (req, res) => {
         fields.push(field);
       }
     }
-    for (const field of fields) {
+    fields.forEach((field) => {
       const result = students.filter((student) => student.field === field)
         .map((student) => student.firstname);
-      response.push(`Number of students in ${field}: ${result.length}.\
- List: ${result.join(', ')}`);
-    }
+      response.push(`Number of students in ${field}: ${result.length}. List: ${result.join(', ')}`);
+    });
     res.end(response.join('\n'));
-  }).catch((err) => {
-    console.log(err);
-    throw Error('Cannot load the database');
   });
 });
 

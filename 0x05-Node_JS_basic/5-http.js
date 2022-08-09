@@ -1,5 +1,5 @@
 const http = require('http');
-const fs = require('fs/promises');
+const fs = require('fs');
 
 function parseCSV(data) {
   let rows = data.split('\n');
@@ -23,9 +23,12 @@ const app = http.createServer((req, res) => {
   if (req.url === '/') {
     res.end('Hello Holberton School!');
   } else if (req.url === '/students') {
-    res.write('This is the list of our students!\n');
-    fs.readFile(process.argv[2], { encoding: 'utf8' }).then((data) => {
-      const students = parseCSV(data);
+    res.write('This is the list of our students\n');
+    fs.readFile(process.argv[2], { encoding: 'utf8' }, (err, db) => {
+      if (err) {
+        throw Error('Cannot load the database');
+      }
+      const students = parseCSV(db);
       res.write(`Number of students: ${students.length}\n`);
       const fields = [];
       for (const field of students.map((student) => student.field)) {
@@ -33,15 +36,12 @@ const app = http.createServer((req, res) => {
           fields.push(field);
         }
       }
-      for (const field of fields) {
+      const results = fields.map((field) => {
         const result = students.filter((student) => student.field === field)
           .map((student) => student.firstname);
-        res.write(`Number of students in ${field}: ${result.length}.\
- List: ${result.join(', ')}`);
-      }
-      res.end();
-    }).catch(() => {
-      throw Error('Cannot load the database');
+        return `Number of students in ${field}: ${result.length}. List: ${result.join(', ')}`;
+      });
+      res.end(results.join('\n'));
     });
   }
 }).listen(1245);

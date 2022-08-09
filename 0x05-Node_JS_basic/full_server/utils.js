@@ -1,4 +1,4 @@
-const fs = require('fs/promises');
+const fs = require('fs');
 
 function parseCSV(data) {
   let rows = data.split('\n');
@@ -18,24 +18,25 @@ function parseCSV(data) {
   return processed;
 }
 
-export default async function readDatabase(path) {
-  let db = null;
-  try {
-    db = await fs.readFile(path, { encoding: 'utf8' });
-  } catch (e) {
-    throw Error('Cannot load the database');
-  }
-  const students = parseCSV(db);
-  const dept = {};
-  for (const field of students.map((student) => student.field)) {
-    if (Object.keys(dept).findIndex((f) => f === field) === -1) {
-      dept[field] = [];
-    }
-  }
-  for (const field of Object.keys(dept)) {
-    const result = students.filter((student) => student.field === field)
-      .map((student) => student.firstname);
-    dept[field] = result;
-  }
-  return dept;
+export default function readDatabase(path) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, { encoding: 'utf8' }, (err, db) => {
+      if (err) {
+        reject(Error('Cannot load the database'));
+      }
+      const students = parseCSV(db);
+      const dept = {};
+      for (const field of students.map((student) => student.field)) {
+        if (Object.keys(dept).findIndex((f) => f === field) === -1) {
+          dept[field] = [];
+        }
+      }
+      for (const field of Object.keys(dept)) {
+        const result = students.filter((student) => student.field === field)
+          .map((student) => student.firstname);
+        dept[field] = result;
+      }
+      resolve(dept);
+    });
+  });
 }
