@@ -29,12 +29,15 @@ const app = http.createServer((req, res) => {
       res.write(`Number of students: ${students.length}\n`);
       const fields = [];
       for (const field of students.map((student) => student.field)) {
-        if (fields.findIndex((f) => f === field) === -1) { fields.push(field); }
+        if (fields.findIndex((f) => f === field) === -1) {
+          fields.push(field);
+        }
       }
       for (const field of fields) {
         const result = students.filter((student) => student.field === field)
           .map((student) => student.firstname);
-        res.write(`Number of students in ${field}: ${result.length}. List: ${result.join(', ')}`);
+        res.write(`Number of students in ${field}: ${result.length}.\
+ List: ${result.join(', ')}`);
       }
       res.end();
     }).catch(() => {

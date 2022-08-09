@@ -7,7 +7,8 @@ export default class StudentController {
         const responseData = ['This is the list of our students'];
         for (const field in fields) {
           if (Object.hasOwnProperty.call(fields, field)) {
-            responseData.push(`Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`);
+            responseData.push(`Number of students in ${field}:\
+ ${fields[field].length}. List: ${fields[field].join(', ')}`);
           }
         }
         response.end(responseData.join('\n'));

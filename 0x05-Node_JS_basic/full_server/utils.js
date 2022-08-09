@@ -28,7 +28,9 @@ export default async function readDatabase(path) {
   const students = parseCSV(db);
   const dept = {};
   for (const field of students.map((student) => student.field)) {
-    if (Object.keys(dept).findIndex((f) => f === field) === -1) { dept[field] = []; }
+    if (Object.keys(dept).findIndex((f) => f === field) === -1) {
+      dept[field] = [];
+    }
   }
   for (const field of Object.keys(dept)) {
     const result = students.filter((student) => student.field === field)
