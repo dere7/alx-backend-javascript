@@ -26,22 +26,24 @@ const app = http.createServer((req, res) => {
     res.write('This is the list of our students\n');
     fs.readFile(process.argv[2], { encoding: 'utf8' }, (err, db) => {
       if (err) {
-        throw Error('Cannot load the database');
-      }
-      const students = parseCSV(db);
-      res.write(`Number of students: ${students.length}\n`);
-      const fields = [];
-      for (const field of students.map((student) => student.field)) {
-        if (fields.findIndex((f) => f === field) === -1) {
-          fields.push(field);
+        res.statusCode = 500;
+        res.end('Cannot load the database');
+      } else {
+        const students = parseCSV(db);
+        res.write(`Number of students: ${students.length}\n`);
+        const fields = [];
+        for (const field of students.map((student) => student.field)) {
+          if (fields.findIndex((f) => f === field) === -1) {
+            fields.push(field);
+          }
         }
+        const results = fields.map((field) => {
+          const result = students.filter((student) => student.field === field)
+            .map((student) => student.firstname);
+          return `Number of students in ${field}: ${result.length}. List: ${result.join(', ')}`;
+        });
+        res.end(results.join('\n'));
       }
-      const results = fields.map((field) => {
-        const result = students.filter((student) => student.field === field)
-          .map((student) => student.firstname);
-        return `Number of students in ${field}: ${result.length}. List: ${result.join(', ')}`;
-      });
-      res.end(results.join('\n'));
     });
   }
 }).listen(1245);
