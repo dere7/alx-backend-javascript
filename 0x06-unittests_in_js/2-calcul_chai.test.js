@@ -1,5 +1,5 @@
-const { expect } = require("chai")
-const calculateNumber = require("./2-calcul")
+const { expect } = require('chai');
+const calculateNumber = require('./2-calcul_chai');
 
 describe('calculateNumber', function () {
   describe('#SUM', function () {
@@ -7,44 +7,44 @@ describe('calculateNumber', function () {
       { args: [1, 3], expected: 4 },
       { args: [1, 3.7], expected: 5 },
       { args: [1.2, 3.7], expected: 5 },
-      { args: [1.5, 3.7], expected: 6 },
-    ]
+      { args: [1.5, 3.7], expected: 6 }
+    ];
     tests.forEach(({ args, expected }) => {
       it(`rounded ${args[0]} + ${args[1]} = ${expected}`, function () {
-        const res = calculateNumber('SUM', ...args)
+        const res = calculateNumber('SUM', ...args);
         expect(res).to.equal(expected);
-      })
-    })
-  })
-  
+      });
+    });
+  });
+
   describe('#SUBTRACT', function () {
     const tests = [
       { args: [1, 3], expected: -2 },
       { args: [1, 3.7], expected: -3 },
       { args: [1.2, 3.7], expected: -3 },
-      { args: [1.5, 3.7], expected: -2 },
-    ]
+      { args: [1.5, 3.7], expected: -2 }
+    ];
     tests.forEach(({ args, expected }) => {
       it(`rounded ${args[0]} - ${args[1]} = ${expected}`, function () {
-        const res = calculateNumber('SUBTRACT', ...args)
+        const res = calculateNumber('SUBTRACT', ...args);
         expect(res).to.equal(expected);
-      })
-    })
-  })
+      });
+    });
+  });
 
   describe('#DIVIDE', function () {
     const tests = [
       { args: [1, 3.7], expected: 0.25 },
       { args: [1.4, 4.5], expected: 0.2 },
-      {args: [1.4, 0], expected: 'Error'},
+      { args: [1.4, 0], expected: 'Error' },
       { args: [1.2, 3.7], expected: 0.25 },
-      { args: [1.5, 3.7], expected: 0.5 },
-    ]
+      { args: [1.5, 3.7], expected: 0.5 }
+    ];
     tests.forEach(({ args, expected }) => {
       it(`rounded ${args[0]} / ${args[1]} = ${expected}`, function () {
-        const res = calculateNumber('DIVIDE', ...args)
+        const res = calculateNumber('DIVIDE', ...args);
         expect(res).to.equal(expected);
-      })
-    })
-  })
-})
+      });
+    });
+  });
+});
